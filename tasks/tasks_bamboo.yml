@@ -1,1 +1,103 @@
 ---
+
+  - include: __detect_init_system.yml
+
+  - name: Bamboo | Create Bamboo group
+    group: name="{{bamboo_user}}" state="present"
+    become: yes
+    tags:
+      - bamboo
+
+  - name: Bamboo | Create Bamboo user
+    become: yes
+    user: name="{{bamboo_user}}" group="{{bamboo_user}}"  comment="Bamboo user" home="{{ bamboo_home_dir }}" shell="/bin/bash" createhome="yes"
+    tags:
+      - bamboo
+
+  - name: Bamboo | Ensure Bamboo directories exist and have proper rights
+    become: yes
+    file:
+      path: "{{ item }}"
+      owner: bamboo
+      group: root
+      mode: 0755
+      state: directory
+    with_items:
+      - "{{bamboo_base_install_dir}}"
+      - "{{bamboo_home_dir}}"
+    tags:
+      - bamboo
+
+  - name: Bamboo | Download Bamboo artifact
+    get_url:
+      url: "https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-{{ bamboo_version }}.tar.gz"
+      dest: "/tmp/bamboo.tar.gz"
+      sha256sum: "{{ bamboo_archive_sha256sum | default(omit) }}"
+      validate_certs: no
+    become: yes
+    tags:
+      - bamboo
+
+  - name: Bamboo | Unpack bamboo artifact
+    unarchive:
+      src: "/tmp/bamboo.tar.gz"
+      dest: "{{ bamboo_base_install_dir }}"
+      owner: bamboo
+      group: root
+      mode: 0755
+      remote_src: yes
+      creates: "{{ bamboo_base_install_dir }}/atlassian-bamboo-{{ bamboo_version }}"
+    become: yes
+    tags:
+      - bamboo
+
+  - name: Bamboo | Link version
+    file:
+      src: "{{ bamboo_base_install_dir }}/atlassian-bamboo-{{ bamboo_version }}"
+      dest: "{{ bamboo_base_install_dir }}/current"
+      state: link
+      owner: bamboo
+      group: root
+    become: yes
+    tags:
+      - bamboo
+
+  - block:
+
+    - name: Bamboo | Template SystemD script
+      template: src="{{role_dir}}/templates/init/bamboo.service.j2" dest="/etc/systemd/system/bamboo.service"
+      become: yes
+      tags:
+        - bamboo
+
+    when: upstart_system == "systemd"
+
+  - block:
+
+      - name: Bamboo | Template init.d script
+        template: src="{{role_dir}}/templates/init/bamboo.init.j2" dest="/etc/init.d/bamboo" mode="u=rwx,g=rx,o=rx"
+        become: yes
+        tags:
+          - bamboo
+
+      - name: Bamboo | Populate rc.d
+        shell: update-rc.d bamboo defaults
+        when: ansible_os_family == "debian"
+        become: yes
+        tags:
+          - bamboo
+
+      - name: Bamboo | Populate rc.d
+        shell: /sbin/chkconfig --add bamboo
+        when: ansible_os_family == "redhat"
+        become: yes
+        tags:
+          - bamboo
+
+    when: upstart_system == "upstart"
+
+  - name: Bamboo | Enable and start service
+    service: name="bamboo" state="restarted" enabled="yes"
+    become: yes
+    tags:
+     - bamboo

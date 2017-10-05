@@ -1,0 +1,10 @@
+---
+
+  - name: restart bamboo
+    become: yes
+    service:
+      name: bamboo
+      state: restarted
+      pattern: bamboo
+    tags:
+      - bamboo

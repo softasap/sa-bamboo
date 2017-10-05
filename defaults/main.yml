@@ -1,3 +1,13 @@
 # defaults file
 
-  role_dir: "{{ role_path }}"
+role_dir: "{{ role_path }}"
+
+bamboo_user: bamboo
+
+bamboo_base_install_dir: /opt/atlassian/bamboo
+bamboo_home_dir: /home/bamboo
+
+bamboo_version: 6.2.1
+bamboo_jvm_minimum_memory: 256m
+bamboo_jvm_maximum_memory: 384m
+bamboo_jvm_stack_size: 512k
