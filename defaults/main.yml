@@ -1,0 +1,3 @@
+# defaults file
+
+  role_dir: "{{ role_path }}"

@@ -1,0 +1,71 @@
+---
+- hosts: currenthost
+  gather_facts: False
+
+  vars:
+    - root_dir: "{{ playbook_dir }}"
+    - shared_dir: "{{ playbook_dir }}"
+
+    - box_deploy_user: ubuntu
+      box_deploy_authorized_keys:
+        - "{{shared_dir}}/files/ssh_keys/svoronenko.pub"
+
+  pre_tasks:
+    - debug: msg="Pre tasks section for {{ansible_host}}"
+
+    - set_fact:
+        remote_ip_address: "{{ ansible_host }}"
+
+    - include_vars: "{{shared_dir}}/common_vars.yml"
+
+    - name: Check host name present in known_hosts
+      local_action: raw {{root_dir}}/scan_server.sh {{remote_ip_address}}
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+    - name: ANSIBLE PYTHON | install python 2
+      raw: test -e /usr/bin/python || (apt -qqy update && apt install -qy python-minimal)
+      become: yes
+
+    - name:  UNPRIVILEGED USERS | Get acl dependency (ansible unprivileged user operations magic)
+      apt: pkg="acl"
+      become: yes
+
+    - name: gather facts
+      setup:
+
+
+  roles:
+    - {
+        role: "sa-box-bootstrap",
+        deploy_user: "{{box_deploy_user}}",
+#        deploy_user_key: "{{playbook_dir}}/files/ssh_keys/deploy_user_rsa",
+#        deploy_user_pub_key: "{{playbook_dir}}/files/ssh_keys/deploy_user_rsa.pub",
+        deploy_user_authorized_keys: "{{box_deploy_authorized_keys}}",
+#        ufw_rules_allow_from_hosts: "{{box_ufw_rules_allow_from_hosts}}",
+
+        hostname: "{{ currenthost | default(ansible_hostname)}}",
+        timezone: "Europe/Kiev",
+
+        option_copy_initial_authorized_keys: true,
+        option_enforce_ssh_keys_login: true,
+        option_file2ban: false,
+        option_firewall: true,
+        option_monit: false
+      }
+# Uncomment if host is not yet configured for automatic updates
+    - {
+         role: "sa-secure-automatic-updates"
+      }
+    - {
+        role: "sa-java",
+        java_version: "8",
+      }
+
+
+
+  tasks:
+
+    - debug: msg="Tasks section"
+
