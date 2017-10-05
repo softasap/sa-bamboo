@@ -26,6 +26,15 @@ Advanced
 
      - {
          role: "sa-bamboo",
+         bamboo_version: 6.2.1,
+
+         bamboo_base_install_dir: /opt/atlassian/bamboo,
+         bamboo_home_dir: /home/bamboo,
+
+         bamboo_jvm_minimum_memory: 256m,
+         bamboo_jvm_maximum_memory: 384m,
+         bamboo_jvm_stack_size: 512k
+
        }
 
 
@@ -70,4 +79,4 @@ Join gitter discussion channel at [Gitter](https://gitter.im/softasap)
 
 Discover other roles at  http://www.softasap.com/roles/registry_generated.html
 
-visit our blog at http://www.softasap.com/blog/archive.html 
+visit our blog at http://www.softasap.com/blog/archive.html
