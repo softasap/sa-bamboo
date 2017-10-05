@@ -1,10 +1,8 @@
 ---
 
   - name: restart bamboo
-    become: yes
-    service:
-      name: bamboo
-      state: restarted
-      pattern: bamboo
+    service: name="bamboo" state="restarted"
+    when: docker_test is not defined
+    become: true
     tags:
       - bamboo

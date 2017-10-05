@@ -98,6 +98,7 @@
 
   - name: Bamboo | Enable and start service
     service: name="bamboo" state="restarted" enabled="yes"
+    when: docker_test is not defined
     become: yes
     tags:
      - bamboo
