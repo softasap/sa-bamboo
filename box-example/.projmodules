@@ -1,3 +1,6 @@
+[submodule "roles/ansible-xml"]
+        path = roles/ansible-xml
+        url = https://github.com/cmprescott/ansible-xml.git
 [submodule "roles/sa-box-bootstrap"]
         path = roles/sa-box-bootstrap
         url = https://github.com/softasap/sa-box-bootstrap.git

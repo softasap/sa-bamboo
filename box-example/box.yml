@@ -19,6 +19,9 @@
 
   roles:
      - {
+        role: "sa-nginx"
+       }
+     - {
         role: "sa-bamboo"
        }
 
