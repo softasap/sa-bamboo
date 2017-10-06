@@ -11,3 +11,19 @@ bamboo_version: 6.2.1
 bamboo_jvm_minimum_memory: 256m
 bamboo_jvm_maximum_memory: 384m
 bamboo_jvm_stack_size: 512k
+
+
+option_configure_for_proxy: false
+option_use_pregenerated_pem: true
+option_serve_over_http: false
+
+bamboo_domain: "vagrant.dev"
+bamboo_host: "bamboo"
+
+ssl_key_fqdn:  "{{bamboo_host}}.{{bamboo_domain}}"
+ssl_key_name:  bamboo_selfsigned
+ssl_cert_name: bamboo_selfsigned
+ssl_install_path: /etc/nginx
+ssl_files:
+  - "{{ssl_key_name}}.key"
+  - "{{ssl_cert_name}}.crt"
