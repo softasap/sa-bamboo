@@ -19,7 +19,21 @@
 
   roles:
      - {
-        role: "sa-bamboo"
+        role: "sa-python"
+       }
+     - {
+        role: "ansible-xml"  # remove for ansible > 2.4.0
+       }
+     - {
+        role: "sa-nginx"
+       }
+     - {
+        role: "sa-bamboo",
+        option_configure_for_proxy: true,
+        option_use_pregenerated_pem: true,
+        option_serve_over_http: false,
+        bamboo_domain: "vagrant.dev",
+        bamboo_host: "bamboo"
        }
 
   tasks:
