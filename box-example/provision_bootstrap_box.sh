@@ -3,7 +3,7 @@ WORKSPACE=./
 BOX_PLAYBOOK=$WORKSPACE/box_bootstrap_only.yml
 BOX_NAME=sixteen
 BOX_ADDRESS=192.168.2.66
-BOX_USER=slavko
+BOX_USER=ubuntu
 BOX_PWD=
 
 prudentia ssh <<EOF

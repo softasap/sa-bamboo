@@ -29,9 +29,10 @@
        }
      - {
         role: "sa-bamboo",
+#        bamboo_version: 5.3,
         option_configure_for_proxy: true,
         option_use_pregenerated_pem: true,
-        option_serve_over_http: false,
+        option_serve_over_http: true,
         bamboo_domain: "vagrant.dev",
         bamboo_host: "bamboo"
        }
