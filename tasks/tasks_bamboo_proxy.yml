@@ -10,6 +10,11 @@
     shell: pip install -U lxml
     become: yes
 
+  - name: Check instance provisioned
+    shell: test -e {{bamboo_home_dir}}/xml-data/configuration/administration.xml
+    ignore_errors: true
+    register: instance_provisioned
+
   - block:
 
     - name: Proxy | TEMPORARY - generate self-signed certificate
@@ -79,6 +84,7 @@
           xpath: /AdministrationConfiguration/myBaseUrl
           value: "https://{{ssl_key_fqdn}}"
         become: yes
+        when: not instance_provisioned | failed
 
     when: not option_serve_over_http
 
@@ -99,6 +105,7 @@
         xpath: /AdministrationConfiguration/myBaseUrl
         value: "http://{{bamboo_host}}.{{bamboo_domain}}"
       become: yes
+      when: not instance_provisioned | failed
 
     when: option_serve_over_http
 
