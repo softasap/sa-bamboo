@@ -35,6 +35,12 @@ Advanced
          bamboo_jvm_maximum_memory: 384m,
          bamboo_jvm_stack_size: 512k
 
+         option_configure_for_proxy: true,
+         option_use_pregenerated_pem: true,
+         option_serve_over_http: false,
+         bamboo_domain: "vagrant.dev",
+         bamboo_host: "bamboo"
+
        }
 
 
