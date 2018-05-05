@@ -39,7 +39,7 @@
     when: not option_serve_over_http
 
   - name: Proxy | Copy Nginx configuration (http)
-    template: src={{role_dir}}/templates/proxy/plain_nginx.conf.j2 dest=/etc/nginx/sites-available/proxy
+    template: src="{{nginx_http_template}}" dest="/etc/nginx/sites-available/{{nginx_site_name}}"
     when: option_serve_over_http
     become: yes
     tags:
@@ -47,7 +47,7 @@
       - update
 
   - name: Proxy | Copy Nginx configuration (https)
-    template: src={{role_dir}}/templates/proxy/nginx.conf.j2 dest=/etc/nginx/sites-available/proxy
+    template: src="{{nginx_https_template}}" dest="/etc/nginx/sites-available/{{nginx_site_name}}"
     when: not option_serve_over_http
     become: yes
     tags:
@@ -56,7 +56,7 @@
 
 
   - name: Proxy | Enable website
-    command: ln -fs /etc/nginx/sites-available/proxy /etc/nginx/sites-enabled/proxy
+    command: "ln -fs /etc/nginx/sites-available/{{nginx_site_name}} /etc/nginx/sites-enabled/{{nginx_site_name}}"
     become: yes
     tags: proxy
 
@@ -78,6 +78,15 @@
           value: "https"
         become: yes
 
+      - name: "Patch {{bamboo_base_install_dir}}/current/conf/server.xml for https"
+        xml:
+          path: "{{bamboo_base_install_dir}}/current/conf/server.xml"
+          xpath: /Server/Service[@name='Catalina']/Connector[@port='8085']
+          attribute: proxy_port
+          value: "443"
+        become: yes
+
+
       - name: Patch {{bamboo_home_dir}}/xml-data/configuration/administration.xml for https
         xml:
           path: "{{bamboo_home_dir}}/xml-data/configuration/administration.xml"
@@ -97,6 +106,14 @@
         xpath: /Server/Service[@name='Catalina']/Connector[@port='8085']
         attribute: scheme
         value: "http"
+      become: yes
+
+    - name: "Patch {{bamboo_base_install_dir}}/current/conf/server.xml for http"
+      xml:
+        path: "{{bamboo_base_install_dir}}/current/conf/server.xml"
+        xpath: /Server/Service[@name='Catalina']/Connector[@port='8085']
+        attribute: proxy_port
+        state: absent
       become: yes
 
     - name: Patch {{bamboo_home_dir}}/xml-data/configuration/administration.xml for http
