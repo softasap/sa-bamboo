@@ -3,14 +3,20 @@
   - include: __detect_init_system.yml
 
   - name: Bamboo | Create Bamboo group
-    group: name="{{bamboo_user}}" state="present"
+    group: name="{{ bamboo_user }}" state="present"
     become: yes
     tags:
       - bamboo
 
   - name: Bamboo | Create Bamboo user
     become: yes
-    user: name="{{bamboo_user}}" group="{{bamboo_user}}"  comment="Bamboo user" home="{{ bamboo_home_dir }}" shell="/bin/bash" createhome="yes"
+    user:
+      name: "{{ bamboo_user }}"
+      group: "{{ bamboo_user }}"
+      comment: "Bamboo user"
+      home: "{{ bamboo_home_dir }}"
+      shell: "/bin/bash"
+      createhome: "yes"
     tags:
       - bamboo
 
@@ -23,8 +29,8 @@
       mode: 0755
       state: directory
     with_items:
-      - "{{bamboo_base_install_dir}}"
-      - "{{bamboo_home_dir}}"
+      - "{{ bamboo_base_install_dir }}"
+      - "{{ bamboo_home_dir }}"
     tags:
       - bamboo
 
@@ -65,17 +71,18 @@
   - block:
 
     - name: Bamboo | Workaround (5.3), ensure that control scripts start with hashbang(!sic)
-      lineinfile: dest="{{item}}"
-                regexp='^#'
-                insertbefore=BOF
-                line='#!/bin/sh'
+      lineinfile:
+         dest: "{{ item }}"
+         regexp: '^#'
+         insertbefore: BOF
+         line: '#!/bin/sh'
       become: yes
       with_items:
-        - "{{bamboo_base_install_dir}}/current/bin/start-bamboo.sh"
-        - "{{bamboo_base_install_dir}}/current/bin/stop-bamboo.sh"
+        - "{{ bamboo_base_install_dir }}/current/bin/start-bamboo.sh"
+        - "{{ bamboo_base_install_dir }}/current/bin/stop-bamboo.sh"
 
     - name: Bamboo | Template SystemD script
-      template: src="{{role_dir}}/templates/init/bamboo.service.j2" dest="/etc/systemd/system/bamboo.service"
+      template: src="{{ role_dir }}/templates/init/bamboo.service.j2" dest="/etc/systemd/system/bamboo.service"
       become: yes
       tags:
         - bamboo
@@ -85,7 +92,7 @@
   - block:
 
       - name: Bamboo | Template init.d script
-        template: src="{{role_dir}}/templates/init/bamboo.init.j2" dest="/etc/init.d/bamboo" mode="u=rwx,g=rx,o=rx"
+        template: src="{{ role_dir }}/templates/init/bamboo.init.j2" dest="/etc/init.d/bamboo" mode="u=rwx,g=rx,o=rx"
         become: yes
         tags:
           - bamboo
@@ -96,6 +103,7 @@
         become: yes
         tags:
           - bamboo
+          - skip_ansible_lint
 
       - name: Bamboo | Populate rc.d
         shell: /sbin/chkconfig --add bamboo
@@ -103,6 +111,7 @@
         become: yes
         tags:
           - bamboo
+          - skip_ansible_lint
 
     when: upstart_system == "upstart"
 

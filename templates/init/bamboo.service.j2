@@ -5,8 +5,8 @@ After=syslog.target network.target
 [Service]
 Type=forking
 User={{bamboo_user}}
-ExecStart={{bamboo_base_install_dir}}/current/bin/start-bamboo.sh
-ExecStop={{bamboo_base_install_dir}}/current/bin/stop-bamboo.sh
+ExecStart={{ bamboo_base_install_dir }}/current/bin/start-bamboo.sh
+ExecStop={{ bamboo_base_install_dir }}/current/bin/stop-bamboo.sh
 Environment="BAMBOO_HOME={{ bamboo_home_dir }}"
 
 [Install]

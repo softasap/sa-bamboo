@@ -1,5 +1,5 @@
 ---
-  - include: "tasks_bamboo.yml"
+  - include_tasks: "tasks_bamboo.yml"
 
-  - include: "tasks_bamboo_proxy.yml"
+  - include_tasks: "tasks_bamboo_proxy.yml"
     when: option_configure_for_proxy
