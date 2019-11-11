@@ -12,8 +12,8 @@ bamboo_jvm_minimum_memory: 256m
 bamboo_jvm_maximum_memory: 384m
 bamboo_jvm_stack_size: 512k
 
-nginx_http_template: "{{role_dir}}/templates/proxy/plain_nginx.conf.j2"
-nginx_https_template: "{{role_dir}}/templates/proxy/nginx.conf.j2"
+nginx_http_template: "{{ role_dir }}/templates/proxy/plain_nginx.conf.j2"
+nginx_https_template: "{{ role_dir }}/templates/proxy/nginx.conf.j2"
 nginx_site_name: "proxy"
 
 option_configure_for_proxy: false
@@ -23,7 +23,7 @@ option_serve_over_http: false
 bamboo_domain: "vagrant.dev"
 bamboo_host: "bamboo"
 
-ssl_key_fqdn:  "{{bamboo_host}}.{{bamboo_domain}}"
+ssl_key_fqdn:  "{{ bamboo_host }}.{{ bamboo_domain }}"
 ssl_key_name:  bamboo_selfsigned
 ssl_cert_name: bamboo_selfsigned
 ssl_install_path: /etc/nginx

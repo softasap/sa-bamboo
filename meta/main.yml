@@ -24,7 +24,7 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - trusty
-        - xenial 
+        - xenial
         - bionic
     - name: Fedora
       versions:
@@ -38,7 +38,8 @@ galaxy_info:
 
   galaxy_tags:
     - bamboo
-    - build_server
+    - buildserver
+    - cdciserver
     - atlassian
     - ubuntu
     - fedora
