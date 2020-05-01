@@ -68,4 +68,3 @@
   tasks:
 
     - debug: msg="Tasks section"
-
